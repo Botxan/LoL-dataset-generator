@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 RIOT_API_KEY = os.getenv("RIOT_API_KEY")
-RETRY_SLEEP_SECONDS = 10
+RETRY_SLEEP_SECONDS = 30
 
 PLATFORM = "euw1"
 REGION = "europe"
@@ -59,6 +59,7 @@ def extract_player_stats(tier, rank, puuid, match_data):
 
     # Find the index of the player's puuid in the match data
     player_index = match_data["metadata"]["participants"].index(puuid)
+    print(f"player index: {player_index}")
     # Get players data
     player_data = match_data["info"]["participants"][player_index]
 
@@ -68,6 +69,11 @@ def extract_player_stats(tier, rank, puuid, match_data):
         if team["teamId"] == player_data["teamId"]:
             team_index = index
             break
+
+    # Sometimes riot 
+
+    print(f"team index: {team_index}")
+    print("")
     # Get player's team data
     team_data = match_data["info"]["teams"][team_index]
 
@@ -82,10 +88,6 @@ def extract_player_stats(tier, rank, puuid, match_data):
         "deaths": player_data["deaths"],
         "assists": player_data["assists"],
         "killingsprees": player_data["killingSprees"],
-        "damagePerMinute": player_data["challenges"]["damagePerMinute"],
-        "goldPerMinute": player_data["challenges"]["goldPerMinute"],
-        "visionScorePerMinute": player_data["challenges"]["visionScorePerMinute"],
-        "teamDamagePercentage": player_data["challenges"]["teamDamagePercentage"],
         "champExperience": player_data["champExperience"],
         "totalDamageDealth": player_data["totalDamageDealt"],
         "totalDamageTaken": player_data["totalDamageTaken"],
@@ -107,7 +109,8 @@ def extract_player_stats(tier, rank, puuid, match_data):
 
 for queue in queues:
     for tier in tiers:
-        for rank in ranks[1:]:
+        for rank in ranks:
+            print(f"Fetching data from {tier} {rank}...")
             # Get some players from each tier/rank
             url = f"{endpoints['league']}/{queue}/{tier}/{rank}?page=1"
             response = make_request(url, headers)
@@ -139,13 +142,20 @@ for queue in queues:
 
                                 if response:
                                     match_data = response.json()
+
+                                    # Since there is not an endpoint for retrieving just Ranked Solo 5v5 games,
+                                    # get stats only from games that have queueId = 420 (Ranked Solo 5v5)
+                                    if match_data["info"]["queueId"] != 420: 
+                                        continue
+
+                                    print(f"match_id: {matchID}")
                                     player_tier = leagueEntryDTO["tier"]
                                     player_rank = leagueEntryDTO["rank"]
                                     player_stats = extract_player_stats(player_tier, player_rank, puuid, match_data)
 
                                     players_stats_list.append(player_stats)
 
-print(f"Total saved games: {len(players_stats_list)}")
+print(f"Done. Total saved games: {len(players_stats_list)}")
 
 # Save result into a json file
 try:
