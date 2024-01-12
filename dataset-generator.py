@@ -28,7 +28,7 @@ ranks = ["I", "II", "III", "IV"]
 games_per_player = 10
 players_stats_list = []
 
-output_file_name = "matches_data"
+output_file_name = "LeagueOfLegends-SoloQ-5v5"
 
 # Make a request to the url passed by parameter with the headers also passed by parameter. 
 # If the server returns a status code 429 (Rate Limit Exceeded), the request is retried after RETRY_SLEEP_SECONDS seconds.
@@ -70,10 +70,7 @@ def extract_player_stats(tier, rank, puuid, match_data):
             team_index = index
             break
 
-    # Sometimes riot 
-
-    print(f"team index: {team_index}")
-    print("")
+    print(f"team index: {team_index}\n")
     # Get player's team data
     team_data = match_data["info"]["teams"][team_index]
 
