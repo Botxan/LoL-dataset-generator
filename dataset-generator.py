@@ -156,7 +156,7 @@ print(f"Done. Total saved games: {len(players_stats_list)}")
 
 # Save result into a json file
 try:
-    with open(f"{output_file_name}.json", 'w') as json_file:
+    with open(f"./dataset/{output_file_name}.json", 'w') as json_file:
         json.dump(players_stats_list, json_file, indent = 4)
 except Exception as e:
     print(f"Error writing to file: {e}")

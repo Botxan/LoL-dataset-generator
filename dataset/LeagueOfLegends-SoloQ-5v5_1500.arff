@@ -3,7 +3,17 @@
 % 2. Sources:
 %	(a) Creator: Oihan Irastorza (Botxan)
 %	(b) Date: 12 January, 2024
-%	(c) Source of data: Riot API
+%	(c) Source of data: Riot API (https://developer.riotgames.com/). Used endpoints: 
+%           1. Players per queue, league and rank: /lol/league/v4/entries/{queue}/{tier}/{division}.
+%               - Useful returned data: tier, rank, wins, losses, summonerId.
+%           2. Get Player Universally Unique IDentifiers (PUUID): /lol/summoner/v4/summoners/by-puuid/{encryptedPUUID}.
+%               - Useful returned data: puuid.
+%           3. Players last match identifiers: /lol/match/v5/matches/by-puuid/{puuid}/ids.
+%               - Useful returned data: list of match ids (e.g. ["EUW1_1234567890", "EUW_0987654321"]).
+%           4. Game and player stats: /lol/match/v5/matches/{matchId}.
+%               - Useful returned data: rest of attributes.
+%       (d) Repository with automated scripts for data gathering and dataset examples: https://github.com/Botxan/LoL-dataset-generator
+%
 %
 % 3. Relevant Information:
 %    --- This database stores a set of statistics on the performance of players
